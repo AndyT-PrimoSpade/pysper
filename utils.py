@@ -1,4 +1,8 @@
 from pyannote.core import Segment, Annotation, Timeline
+import pysrt
+import srt
+import math
+from tqdm import tqdm
 
 
 def get_text_with_timestamp(asr_result):
@@ -34,7 +38,7 @@ def merge_sentence(spk_text):
     merged_spk_text = []
     previous_speaker = None
     text_cache = []
-    for seg, speaker, text in spk_text:
+    for seg, speaker, text in tqdm(spk_text):
         if speaker != previous_speaker and previous_speaker is not None and len(text_cache) > 0:
             merged_spk_text.append(merge_cache(text_cache))
             text_cache = [(seg, speaker, text)]
@@ -62,9 +66,50 @@ def diarize_and_merge_text(asr_result, diarization_result):
 
 def write_results_to_txt_file(final_result, file_name):
     with open(file_name, 'w') as fp:
-        for seg, speaker, sentence in final_result:
-            line = f'{seg.start:.2f} {seg.end:.2f} {speaker} {sentence}\n'
+        for seg, speaker, sentence in tqdm(final_result):
+            line = f'{seg.start} / {seg.end} / {speaker} / {sentence}\n'
             fp.write(line)
+
+
+# def write_whisper_to_srt_file(segments, file_name):
+#     for segment in segments:
+#         startTime = str(0)+str(timedelta(seconds=int(segment['start'])))+',000'
+#         endTime = str(0)+str(timedelta(seconds=int(segment['end'])))+',000'
+#         text = segment['text']
+#         segmentId = segment['id']+1
+#         segment = f"{segmentId}\n{startTime} --> {endTime}\n{text[1:] if text[0] is ' ' else text}\n\n"
+#         srtFilename = os.file_name.join("SrtFiles", f"VIDEO_FILENAME.srt")
+#         with open(srtFilename, 'a', encoding='utf-8') as srtFile:
+#             srtFile.write(segment)
+#     return srtFilename
+
+# def write_whisper_to_resultsrt_file(segments, file_name):
+#     for seg, speaker, sentence in final_result:
+#         line = f'{seg.start} {seg.end} {speaker} {sentence}\n'
+#         with open(srtFilename, 'a', encoding='utf-8') as srtFile:
+#             srt.write(line)
+
+def convert_txt_to_srt(input_file, output_file):
+    with open(input_file, "r") as input:
+        lines = input.readlines()
+    srt_subtitles = []
+    for i, line in tqdm(enumerate(lines)):
+        start = line.split("/")[0].strip()
+        print(start)
+        start = int(start)
+        start = math.trunc(start)
+        end = line.split("/")[1].strip()
+        print(end)
+        end = int(end)
+        end = math.trunc(end)
+        speaker = line.split("/")[2]
+        main = line.split("/")[3]
+        content = f'{speaker} -- {main}'
+        subtitles = srt.Subtitle(i+1, start, end, content)
+        srt_subtitles.append(subtitles)
+    with open(output_file, "w") as output:
+        for subtitle in srt_subtitles:
+            output.write(subtitle.to_srt())
 
 # This is to print the result on the console
 # for seg, spk, sent in final_result:
