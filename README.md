@@ -1,4 +1,4 @@
-# <span style="color:green"> __PyWhisper Installation__
+# <span style="color:green"> __Pysper Installation__
 - Install python 3.10
 - Install pip
 - Install ffmpeg, windows - download file at ffmpeg.org. Click on Windows EXE file and click on Windows builds from gyan.dev. Once at gyan.dev scroll down and download ffmpeg-git-full.7z. <br /> Extract zip and rename to ffmpeg then move to root folder C://. RUN CMD in admin set the eviroment path by running `setx /m PATH "C:\Users/user_name/ffmpeg\bin;%PATH%"`. <br />
