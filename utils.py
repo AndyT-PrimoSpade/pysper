@@ -3,6 +3,8 @@ import pysrt
 import srt
 import math
 from tqdm import tqdm
+from datetime import datetime, timedelta
+import os
 
 
 def get_text_with_timestamp(asr_result):
@@ -70,46 +72,30 @@ def write_results_to_txt_file(final_result, file_name):
             line = f'{seg.start} / {seg.end} / {speaker} / {sentence}\n'
             fp.write(line)
 
-
-# def write_whisper_to_srt_file(segments, file_name):
-#     for segment in segments:
-#         startTime = str(0)+str(timedelta(seconds=int(segment['start'])))+',000'
-#         endTime = str(0)+str(timedelta(seconds=int(segment['end'])))+',000'
-#         text = segment['text']
-#         segmentId = segment['id']+1
-#         segment = f"{segmentId}\n{startTime} --> {endTime}\n{text[1:] if text[0] is ' ' else text}\n\n"
-#         srtFilename = os.file_name.join("SrtFiles", f"VIDEO_FILENAME.srt")
-#         with open(srtFilename, 'a', encoding='utf-8') as srtFile:
-#             srtFile.write(segment)
-#     return srtFilename
-
-# def write_whisper_to_resultsrt_file(segments, file_name):
-#     for seg, speaker, sentence in final_result:
-#         line = f'{seg.start} {seg.end} {speaker} {sentence}\n'
-#         with open(srtFilename, 'a', encoding='utf-8') as srtFile:
-#             srt.write(line)
-
 def convert_txt_to_srt(input_file, output_file):
     with open(input_file, "r") as input:
         lines = input.readlines()
+    if os.path.exists(output_file):
+        os.remove(output_file)
+    else:
+        pass
     srt_subtitles = []
     for i, line in tqdm(enumerate(lines)):
         start = line.split("/")[0].strip()
-        print(start)
+        start = float(start)
         start = int(start)
-        start = math.trunc(start)
+        start = timedelta(seconds = start)
         end = line.split("/")[1].strip()
-        print(end)
+        end = float(end)
         end = int(end)
-        end = math.trunc(end)
-        speaker = line.split("/")[2]
-        main = line.split("/")[3]
+        end = timedelta(seconds = end)
+        speaker = line.split("/")[2].strip()
+        main = line.split("/")[3].strip()
         content = f'{speaker} -- {main}'
-        subtitles = srt.Subtitle(i+1, start, end, content)
+        subtitles = f'\n{i+1}\n\n{start} --> {end}\n\n{content}\n'
         srt_subtitles.append(subtitles)
-    with open(output_file, "w") as output:
-        for subtitle in srt_subtitles:
-            output.write(subtitle.to_srt())
+        with open(output_file, "a") as output:
+            output.write(subtitles)
 
 # This is to print the result on the console
 # for seg, spk, sent in final_result:
