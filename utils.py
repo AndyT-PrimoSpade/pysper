@@ -1,6 +1,4 @@
 from pyannote.core import Segment, Annotation, Timeline
-import pysrt
-import srt
 import math
 from tqdm import tqdm
 from datetime import datetime, timedelta
@@ -92,7 +90,7 @@ def convert_txt_to_srt(input_file, output_file):
         speaker = line.split("/")[2].strip()
         main = line.split("/")[3].strip()
         content = f'{speaker} -- {main}'
-        subtitles = f'\n{i+1}\n\n{start} --> {end}\n\n{content}\n'
+        subtitles = f'{i+1}\n{start} --> {end}\n{content}\n\n'
         srt_subtitles.append(subtitles)
         with open(output_file, "a") as output:
             output.write(subtitles)
