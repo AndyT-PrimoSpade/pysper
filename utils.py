@@ -3,6 +3,9 @@ import math
 from tqdm import tqdm
 from datetime import datetime, timedelta
 import os
+from pydub import AudioSegment
+import psutil
+import time
 
 
 def get_text_with_timestamp(asr_result):
@@ -94,6 +97,58 @@ def convert_txt_to_srt(input_file, output_file):
         srt_subtitles.append(subtitles)
         with open(output_file, "a") as output:
             output.write(subtitles)
+
+
+def split_audio(fileName):
+    audio_name = fileName
+    audio_half = audio_name.split(".")[0]
+    audio = AudioSegment.from_file(audio_name)
+
+    duration = len(audio)
+
+    half_point = int(duration / 2)
+    extra_duration = duration % 2
+
+    first_half = audio[:half_point]
+    second_half = audio[half_point + extra_duration:]
+
+    first_half.export(f"audio/first_half.mp3")
+
+    second_half.export(f"audio/second_half.mp3")
+
+def combine_txt_file(file1, file2, output):
+    with open(file1, "r") as f1:
+        content1 = f1.read()
+    with open(file2, "r") as f2:
+        content2 = f2.read()
+    with open(output, "w") as f3:
+        f3.write(content1 + content2)
+
+    if __name__ == "__main__":
+        file1 = os.path.join(os.getcwd(), "file1.txt")
+        file2 = os.path.join(os.getcwd(), "file2.txt")
+        output = os.path.join(os.getcwd(), "output.txt")
+
+def whisper_txt_combine(input_1, input_2):    
+    with open("output/whisper1.txt", 'w') as text:
+        text.write(input_1)
+    with open("output/whisper2.txt", 'w') as text:
+        text.write(input_2)
+    combine_txt_file("output/whisper1.txt", "output/whisper2.txt", "output/whisper.txt")
+    if os.path.exists("output/whisper1.txt"):
+        os.remove("output/whisper1.txt")
+    if os.path.exists("output/whisper2.txt"):
+        os.remove("output/whisper2.txt")
+
+def adjust_cpu_usage():
+    cpu_limit = 20
+    while True:
+        cpu_percent = psutil.cpu_percent(interval=1)
+        if cpu_percent > cpu_limit:
+            time.sleep(0.1)
+        else:
+            break
+
 
 # This is to print the result on the console
 # for seg, spk, sent in final_result:
