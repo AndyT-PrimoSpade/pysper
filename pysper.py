@@ -1,7 +1,7 @@
 import os
 import whisper
 from pyannote.audio import Pipeline
-from utils import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, split_audio, whisper_txt_combine, combine_txt_file, adjust_cpu_usage
+from utils import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, split_audio, whisper_txt_combine, combine_txt_file, adjust_cpu_usage, convert_m4a_to_wav, convert_audio_to_wav
 from tqdm import tqdm
 import psutil
 import time
@@ -10,12 +10,17 @@ import datetime
 print(datetime.datetime.now())
 
 # psutil.cpu_percent(interval=1, percpu=False)
-# adjust_cpu_usage()
+adjust_cpu_usage()
 
-audiofile_name = "MacTrade"
+audiofile_name = "audio.mp3"
 
-convert_m4a_to_wav(f"input/{audiofile_name}.m4a", f"convert/{audiofile_name}.wav")
+filetype = ["m4a", "mp3", "mp4", "avi"]
+for element in filetype:
+    if element in audiofile_name:
+        output_path = convert_audio_to_wav(audiofile_name)
+        print(f"The {element} audio file has been convert to WAV format and saved to {output_path}")
 
+audiofile_name = audiofile_name.split(".")[0]
 main = f"convert/{audiofile_name}.wav"
 
 audio_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization",
