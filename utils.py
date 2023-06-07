@@ -6,6 +6,7 @@ import os
 from pydub import AudioSegment
 import psutil
 import time
+import ffmpeg
 
 
 def get_text_with_timestamp(asr_result):
@@ -148,6 +149,10 @@ def adjust_cpu_usage():
             time.sleep(0.1)
         else:
             break
+
+def convert_m4a_to_wav(input_file, output_file):
+    ffmpeg.input(input_file).output(output_file, format='wav').run()
+    print("Conversion Completed!")
 
 
 # This is to print the result on the console
