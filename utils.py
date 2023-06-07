@@ -7,6 +7,7 @@ from pydub import AudioSegment
 import psutil
 import time
 import ffmpeg
+import subprocess
 
 
 def get_text_with_timestamp(asr_result):
@@ -154,6 +155,10 @@ def convert_m4a_to_wav(input_file, output_file):
     ffmpeg.input(input_file).output(output_file, format='wav').run()
     print("Conversion Completed!")
 
+def convert_audio_to_wav(file_path):
+    filenaming = file_path.split(".")[0]
+    ffmpeg_command = ["ffmpeg", "-i", file_path, "-c:a", "pcm_s16le", "-ar", "44100", "-ac", "2", "-f", "wav", f"convert/{filenaming}.wav"]
+    subprocess.run(ffmpeg_command)
 
 # This is to print the result on the console
 # for seg, spk, sent in final_result:
