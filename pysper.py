@@ -7,41 +7,30 @@ import psutil
 import time
 import datetime
 
-# psutil.cpu_percent(interval=1, percpu=False)
-
 print(datetime.datetime.now())
-adjust_cpu_usage()
 
-split_audio("audio.wav")
-first = "audio/first_half.mp3"
-second = "audio/second_half.mp3"
+# psutil.cpu_percent(interval=1, percpu=False)
+# adjust_cpu_usage()
+
+audiofile_name = "MacTrade"
+
+convert_m4a_to_wav(f"input/{audiofile_name}.m4a", f"convert/{audiofile_name}.wav")
+
+main = f"convert/{audiofile_name}.wav"
 
 audio_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization",
                                     use_auth_token="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")
 asr_model = whisper.load_model("medium")
-first_asr_transcription = asr_model.transcribe(first, verbose=False, language="en")
-second_asr_transcription = asr_model.transcribe(second, verbose=False, language="en")
-
-whisper_text_1 = first_asr_transcription["text"]
-whisper_text_2 = second_asr_transcription["text"]
-whisper_txt_combine(whisper_text_1, whisper_text_2)
+asr_transcription = asr_model.transcribe(main, verbose=False, language="en")
 
 for result in tqdm(range(1)):
-    first_diz = audio_pipeline(first)
-    second_diz = audio_pipeline(second)
+    diarization = audio_pipeline(main)
 
-diarized_text_1 = diarize_and_merge_text(first_asr_transcription, first_diz)
-diarized_text_2 = diarize_and_merge_text(second_asr_transcription, second_diz)
+diarized_text = diarize_and_merge_text(asr_transcription, diarization)
 
-write_results_to_txt_file(diarized_text_1, "output/result_1.txt")
-write_results_to_txt_file(diarized_text_1, "output/result_2.txt")
-combine_txt_file("output/result_1.txt", "output/result_2.txt", "output/result.txt")
+write_results_to_txt_file(diarized_text, "output/result.txt")
+
 convert_txt_to_srt("output/result.txt", "output/result.srt")
-
-if os.path.exists("output/result_1.txt"):
-    os.remove("output/result_1.txt")
-if os.path.exists("output/result_2.txt"):
-    os.remove("output/result_2.txt")
 
 print(datetime.datetime.now())
 
