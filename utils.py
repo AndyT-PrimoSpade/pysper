@@ -156,7 +156,7 @@ def convert_m4a_to_wav(input_file, output_file):
     print("Conversion Completed!")
 
 def convert_audio_to_wav(file_path):
-    filenaming = file_path.split(".")[0]
+    filenaming = file_path.split("/")[1].split(".")[0]
     ffmpeg_command = ["ffmpeg", "-i", file_path, "-c:a", "pcm_s16le", "-ar", "44100", "-ac", "2", "-f", "wav", f"convert/{filenaming}.wav"]
     subprocess.run(ffmpeg_command)
 
