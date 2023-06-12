@@ -72,7 +72,7 @@ def diarize_and_merge_text(asr_result, diarization_result):
 def write_results_to_txt_file(final_result, file_name):
     with open(file_name, 'w') as fp:
         for seg, speaker, sentence in tqdm(final_result):
-            line = f'{seg.start.2f} / {seg.end.2f} / {speake} / {sentence}\n'
+            line = f'{seg.start:.2f} / {seg.end:.2f} / {speaker} / {sentence}\n'
             fp.write(line)
 
 def convert_txt_to_srt(input_file, output_file):
@@ -115,7 +115,6 @@ def split_audio(fileName):
     second_half = audio[half_point + extra_duration:]
 
     first_half.export(f"audio/first_half.mp3")
-
     second_half.export(f"audio/second_half.mp3")
 
 def combine_txt_file(file1, file2, output):
