@@ -1,7 +1,7 @@
 import os
 import whisper
 from pyannote.audio import Pipeline
-from utils import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, split_audio, whisper_txt_combine, combine_txt_file, adjust_cpu_usage, convert_m4a_to_wav, convert_audio_to_wav
+from utils import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, split_audio, whisper_txt_combine, combine_txt_file, adjust_cpu_usage, convert_m4a_to_wav, convert_audio_to_wav, has_file
 from tqdm import tqdm
 import psutil
 import time
@@ -12,8 +12,7 @@ print(datetime.datetime.now())
 psutil.cpu_percent(interval=1, percpu=False)
 # adjust_cpu_usage()
 
-audio_filename = input("Audio File Name: ")
-audiofile_name = f"input/{audio_filename}"
+audiofile_name = has_file()
 
 filetype = ["m4a", "mp3", "mp4", "avi"]
 for element in filetype:
@@ -27,7 +26,7 @@ main = f"convert/{audiofile_name}.wav"
 
 audio_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization",
                                     use_auth_token="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")
-asr_model = whisper.load_model("medium")
+asr_model = whisper.load_model("medium.en")
 asr_transcription = asr_model.transcribe(main, verbose=False, language="en")
 
 for result in tqdm(range(1)):
