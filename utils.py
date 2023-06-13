@@ -9,6 +9,14 @@ import time
 import ffmpeg
 import subprocess
 
+def has_file():
+    while True:
+        audio_filename = input("Audio File Name: ")
+        audiofile_name = f"input/{audio_filename}"
+        if not os.path.exists(audiofile_name):
+            print("Invalid file name, please enter again")
+            continue
+        return audiofile_name
 
 def get_text_with_timestamp(asr_result):
     timestamp_texts = []
@@ -70,9 +78,12 @@ def diarize_and_merge_text(asr_result, diarization_result):
 
 
 def write_results_to_txt_file(final_result, file_name):
+    if os.path.exists(file_name):
+        os.remove(file_name)
     with open(file_name, 'w') as fp:
         for seg, speaker, sentence in tqdm(final_result):
             line = f'{seg.start:.2f} / {seg.end:.2f} / {speaker} / {sentence}\n'
+            str(line).encode(encoding="utf8", errors="xmlcharrefreplace")
             fp.write(line)
 
 def convert_txt_to_srt(input_file, output_file):
@@ -115,6 +126,7 @@ def split_audio(fileName):
     second_half = audio[half_point + extra_duration:]
 
     first_half.export(f"audio/first_half.mp3")
+
     second_half.export(f"audio/second_half.mp3")
 
 def combine_txt_file(file1, file2, output):
