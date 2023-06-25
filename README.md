@@ -15,3 +15,16 @@ Restart PC and run `ffmpeg -version` to check if install.
 - CMD/PowerShell cd to the dir and run `python pysper.py shell=True`
 - Under asr_transcription and diarized_text_str change the name to audio file name.
 - Under diarized_text_str for num_speakers can set if speaker number is known.
+
+# <span style="color:green"> __Install Via Pip__
+- Uninstall torch torchvision torchaudio using pip
+- https://pytorch.org/get-started/locally/ `pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu117`
+
+# <span style="color:green"> __Install Via Conda__
+- Install Anaconda - use base env (Anacoda Powershell Prompt)
+- conda install pytorch==2.0.0 torchvision==0.15.0 torchaudio==2.0.0 pytorch-cuda=11.7 -c pytorch -c nvidia
+- pip install the rest
+
+- This is for the bat file to run Anacoda Powershell prompt
+`@echo off call C:\Anaconda3\Scripts\activate.bat cd C:\path\to\your\code python your_code.py`
+
