@@ -10,7 +10,7 @@ import torch
 
 print(datetime.datetime.now())
 
-# psutil.cpu_percent(interval=1, percpu=False)
+psutil.cpu_percent(interval=1, percpu=False)
 # adjust_cpu_usage()
 # device = torch.device("cuda:0")
 device = torch.device("cpu")
