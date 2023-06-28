@@ -65,6 +65,11 @@ def merge_sentence(spk_text):
             merged_spk_text.append(merge_cache(text_cache))
             text_cache = []
             previous_speaker = speaker
+        elif speaker == previous_speaker:
+            text_cache.append((seg, speaker, text))
+            merged_spk_text.append(merge_cache(text_cache))
+            text_cache = []
+            previous_speaker = speaker
         else:
             text_cache.append((seg, speaker, text))
             previous_speaker = speaker
