@@ -21,69 +21,75 @@ def has_file():
             continue
         return audiofile_name
 
-def get_text_with_timestamp(transcribe_res):
+PUNCTUATION_SENTENCE_END = ['.', '?', '!', ' ']
+
+
+def get_text_with_timestamp(asr_result):
     timestamp_texts = []
-    for item in transcribe_res['segments']:
-        start = item['start']
-        end = item['end']
+    for item in asr_result['segments']:
+        start_time = item['start']
+        end_time = item['end']
         text = item['text']
-        timestamp_texts.append((Segment(start, end), text))
+        timestamp_texts.append((Segment(start_time, end_time), text))
     return timestamp_texts
 
 
-def add_speaker_info_to_text(timestamp_texts, ann):
+def add_speaker_info_to_text(timestamp_texts, diarization_result):
     spk_text = []
     for seg, text in timestamp_texts:
-        spk = ann.crop(seg).argmax()
-        spk_text.append((seg, spk, text))
+        speaker = diarization_result.crop(seg).argmax()
+        spk_text.append((seg, speaker, text))
     return spk_text
 
 
-def merge_cache(text_cache):
+def merge_cache(text_cache, speaker):
     sentence = ''.join([item[-1] for item in text_cache])
-    spk = text_cache[0][1]
-    start = text_cache[0][0].start
-    end = text_cache[-1][0].end
-    return Segment(start, end), spk, sentence
-
-
-PUNC_SENT_END = ['.', '?', '!']
+    start_time = text_cache[0][0].start
+    end_time = text_cache[-1][0].end
+    return Segment(start_time, end_time), speaker, sentence
 
 
 def merge_sentence(spk_text):
     merged_spk_text = []
-    pre_spk = None
+    previous_speaker = None
     text_cache = []
-    for seg, spk, text in spk_text:
-        if spk != pre_spk and pre_spk is not None and len(text_cache) > 0:
-            merged_spk_text.append(merge_cache(text_cache))
-            text_cache = [(seg, spk, text)]
-            pre_spk = spk
-
-        elif text[-1] in PUNC_SENT_END:
-            text_cache.append((seg, spk, text))
-            merged_spk_text.append(merge_cache(text_cache))
+    for seg, speaker, text in spk_text:
+        # if speaker is None:
+        #     if previous_speaker is not None:
+        #         previous_speaker = seg[2]
+        #     else:
+        #         speaker = previous_speaker
+        if speaker != previous_speaker and previous_speaker is not None and len(text_cache) > 0:
+            merged_spk_text.append(merge_cache(text_cache, previous_speaker))
+            text_cache = [(seg, speaker, text)]
+            previous_speaker = speaker
+        elif text[-1] in PUNCTUATION_SENTENCE_END:
+            text_cache.append((seg, speaker, text))
+            merged_spk_text.append(merge_cache(text_cache, speaker))
             text_cache = []
-            pre_spk = spk
+            previous_speaker = speaker
         else:
-            text_cache.append((seg, spk, text))
-            pre_spk = spk
+            text_cache.append((seg, speaker, text))
+            previous_speaker = speaker
     if len(text_cache) > 0:
-        merged_spk_text.append(merge_cache(text_cache))
+        merged_spk_text.append(merge_cache(text_cache, previous_speaker))
     return merged_spk_text
 
 
-def diarize_text(transcribe_res, diarization_result):
-    timestamp_texts = get_text_with_timestamp(transcribe_res)
+def diarize_and_merge_text(asr_result, diarization_result):
+    timestamp_texts = get_text_with_timestamp(asr_result)
     spk_text = add_speaker_info_to_text(timestamp_texts, diarization_result)
     res_processed = merge_sentence(spk_text)
     return res_processed
 
 
-def write_to_txt(spk_sent, file):
-    with open(file, 'w') as fp:
-        for seg, spk, sentence in spk_sent:
-            line = f'{seg.start:.2f} {seg.end:.2f} {spk} {sentence}\n'
+def write_results_to_txt_file(final_result, file_name):
+    if os.path.exists(file_name):
+        os.remove(file_name)
+    with open(file_name, 'w') as fp:
+        for seg, speaker, sentence in tqdm(final_result):
+            line = f'{seg.start:.2f} / {seg.end:.2f} / {speaker} / {sentence}\n'
+            str(line).encode(encoding="utf8", errors="xmlcharrefreplace")
             fp.write(line)
 
 def convert_txt_to_srt(input_file, output_file):
