@@ -11,6 +11,7 @@ import subprocess
 import io
 import ctypes
 import tkinter as tk
+import gc
 
 def has_file():
     while True:
@@ -193,6 +194,10 @@ def finish_popup(duration):
     label.pack() 
     popup.protocol("WM_DELETE_WINDOW", lambda: popup.destroy())
     popup.mainloop()
+
+def clear_purge():
+    gc.collect()
+    gc.collect(generation=2)
 
 # This is to print the result on the console
 # for seg, spk, sent in final_result:
