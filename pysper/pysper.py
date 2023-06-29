@@ -1,7 +1,7 @@
 import os
 import whisper
 from pyannote.audio import Pipeline
-from test import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, adjust_cpu_usage, convert_audio_to_wav, clear_cmd
+from test import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, adjust_cpu_usage, convert_audio_to_wav, clear_cmd, clear_purge
 from tqdm import tqdm
 import psutil
 import time
