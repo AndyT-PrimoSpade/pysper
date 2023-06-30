@@ -22,7 +22,7 @@ Restart PC and run `ffmpeg -version` to check if install.
 
 # <span style="color:green"> __Install Via Conda__
 - Install Anaconda - use base env (Anacoda Powershell Prompt)
-- conda install pytorch==2.0.0 torchvision==0.15.0 torchaudio==2.0.0 pytorch-cuda=11.7 -c pytorch -c nvidia
+- `conda install pytorch==2.0.0 torchvision==0.15.0 torchaudio==2.0.0 pytorch-cuda=11.7 -c pytorch -c nvidia`
 - pip install the rest
 
 - This is for the bat file to run Anacoda Powershell prompt
