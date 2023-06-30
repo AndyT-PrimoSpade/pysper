@@ -12,7 +12,7 @@ Restart PC and run `ffmpeg -version` to check if install.
 
 # <span style="color:green"> __Running Script__
 - Update the use_auth_token by register via huggingface for the token
-- CMD/PowerShell cd to the dir and run `python pysper.py shell=True`
+- CMD/PowerShell cd to the dir and run `python pysper.py`
 - Under asr_transcription and diarized_text_str change the name to audio file name.
 - Under diarized_text_str for num_speakers can set if speaker number is known.
 
@@ -28,3 +28,10 @@ Restart PC and run `ffmpeg -version` to check if install.
 - This is for the bat file to run Anacoda Powershell prompt
 `@echo off call C:\Anaconda3\Scripts\activate.bat cd C:\path\to\your\code python your_code.py`
 
+
+# <span style="color:green"> __To Runn Offline__
+- Install HF CLI `pip install huggingface_hub`
+- Run CLI to login `huggingface-cli login`
+- Save Cred to local `huggingface-cli login --token your_token`
+- Run Pysper as per normal to download model
+- Check cred is in local
