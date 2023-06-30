@@ -38,8 +38,10 @@ def get_text_with_timestamp(asr_result):
 def add_speaker_info_to_text(timestamp_texts, diarization_result):
     spk_text = []
     for seg, text in timestamp_texts:
+        print(seg)
         speaker = diarization_result.crop(seg).argmax()
         spk_text.append((seg, speaker, text))
+        print(speaker)
     return spk_text
 
 
@@ -55,11 +57,10 @@ def merge_sentence(spk_text):
     previous_speaker = None
     text_cache = []
     for seg, speaker, text in spk_text:
-        # if speaker is None:
-        #     if previous_speaker is not None:
-        #         previous_speaker = seg[2]
-        #     else:
-        #         speaker = previous_speaker
+        print(f"{previous_speaker} - {speaker}")      
+        if speaker is None:
+            if previous_speaker is not None:    
+                speaker = previous_speaker
         if speaker != previous_speaker and previous_speaker is not None and len(text_cache) > 0:
             merged_spk_text.append(merge_cache(text_cache, previous_speaker))
             text_cache = [(seg, speaker, text)]
