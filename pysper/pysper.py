@@ -1,7 +1,7 @@
 import os
 import whisper
 from pyannote.audio import Pipeline
-from test import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, adjust_cpu_usage, convert_audio_to_wav, clear_cmd, clear_purge
+from utils import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, adjust_cpu_usage, convert_audio_to_wav, clear_cmd, clear_purge
 from tqdm import tqdm
 import psutil
 import time
@@ -12,8 +12,8 @@ import torch
 
 start = datetime.datetime.now()
 psutil.cpu_percent(interval=1, percpu=False)
-device = torch.device("cuda:0")
-# device = torch.device("cpu")
+# device = torch.device("cuda:0")
+device = torch.device("cpu")
 
 audio_filename = input("Audio File Name: ")
 audiofile_name = f"../input/{audio_filename}"
@@ -26,12 +26,12 @@ for element in filetype:
 clear_cmd()
 audiofile_name = audiofile_name.split("/")[-1].split(".")[0]
 main = f"../convert/{audiofile_name}.wav"
-audio_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization",
-                                    use_auth_token="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").to(device)
+audio_pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization", 
+                                          use_auth_token="~/.pyannote/token.cred").to(device)
 clear_cmd()
-asr_model = whisper.load_model("large-v2").to(device)
-asr_model.to(torch.device("cuda:0"))
-audio_pipeline.to(torch.device("cuda:0"))
+asr_model = whisper.load_model("medium").to(device)
+asr_model.to(torch.device("cpu"))
+audio_pipeline.to(torch.device("cpu"))
 asr_transcription = asr_model.transcribe(main, verbose=False, language="en")
 for result in tqdm(range(1)):
     diarization = audio_pipeline(main)
