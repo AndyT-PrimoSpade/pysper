@@ -35,7 +35,7 @@ Restart PC and run `ffmpeg -version` to check if install.
 - Save Cred to local `huggingface-cli login --token your_token`
 - Run Pysper as per normal to download model
 - Use explore to your HF saved toke location copy the file
-- Run `pip show pyanno.audio` get the location
+- Run `pip show pyannote.audio` get the location
 - Use explore to the pyannote and paste the file and rename the file to token.cred
 - In CMD `set PYANNOTE_AUDIO_DISABLE_CHECK_HF_URL=1`
 
