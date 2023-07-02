@@ -38,10 +38,8 @@ def get_text_with_timestamp(asr_result):
 def add_speaker_info_to_text(timestamp_texts, diarization_result):
     spk_text = []
     for seg, text in timestamp_texts:
-        print(seg)
         speaker = diarization_result.crop(seg).argmax()
         spk_text.append((seg, speaker, text))
-        print(speaker)
     return spk_text
 
 
