@@ -209,6 +209,12 @@ def clear_purge():
     gc.collect()
     gc.collect(generation=2)
 
+def convert_time_to_hms(time_in_seconds):
+  time_in_hours = time_in_seconds // 3600
+  time_in_minutes = (time_in_seconds % 3600) // 60
+  time_in_seconds = time_in_seconds % 60
+  return f"{time_in_hours:02d}:{time_in_minutes:02d}:{time_in_seconds:02d}"
+
 # This is to print the result on the console
 # for seg, spk, sent in final_result:
 #     line = f'{seg.start:.2f} {seg.end:.2f} {spk} {sent}'
