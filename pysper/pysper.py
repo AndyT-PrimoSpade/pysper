@@ -1,7 +1,7 @@
 import os
 import whisper
 from pyannote.audio import Pipeline
-from utils import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, adjust_cpu_usage, convert_audio_to_wav, clear_cmd, clear_purge
+from utils import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, adjust_cpu_usage, convert_audio_to_wav, clear_cmd, clear_purge, print_time_difference
 from tqdm import tqdm
 import psutil
 import time
@@ -45,4 +45,5 @@ write_results_to_txt_file(diarized_text, f"../output/{audiofile_name}.txt")
 convert_txt_to_srt(f"../output/{audiofile_name}.txt", f"../output/{audiofile_name}.srt")
 end = datetime.datetime.now()
 print(end-start)
+print_time_difference(start, end)
 clear_purge()
