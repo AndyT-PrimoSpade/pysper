@@ -39,7 +39,7 @@ asr_model.to(torch.device("cuda:0"))
 audio_pipeline.to(torch.device("cuda:0"))
 asr_transcription = asr_model.transcribe(main, verbose=False, language="en")
 for result in tqdm(range(1)):
-    diarization = pipeline.predict(main)
+    diarization = audio_pipeline(main)
 diarized_text = diarize_and_merge_text(asr_transcription, diarization)
 write_results_to_txt_file(diarized_text, f"../output/{audiofile_name}.txt")
 convert_txt_to_srt(f"../output/{audiofile_name}.txt", f"../output/{audiofile_name}.srt")
