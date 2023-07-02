@@ -2,9 +2,9 @@
 torch
 torchvision
 torchaudio
-whisper
+git+https://github.com/openai/whisper.git
 setuptools-rust
-pyannote.audio
+git+https://github.com/pyannote/pyannote-audio.git
 setuptools==59.5.0
 pydub
 tqdm
