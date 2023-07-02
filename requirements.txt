@@ -1,0 +1,9 @@
+whisper
+setuptools-rust
+pyannote.audio
+setuptools==59.5.0
+pydub
+tqdm
+psutil
+ffmpeg
+subprocess
