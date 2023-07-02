@@ -38,5 +38,5 @@ Restart PC and run `ffmpeg -version` to check if install.
 - Run `pip show pyannote.audio` get the location
 - Use explore to the pyannote and paste the file and rename the file to token.cred
 - In CMD `set PYANNOTE_AUDIO_DISABLE_CHECK_HF_URL=1`
-
-
+- `pip install pytorch_lightning==2.0.4`
+- There will be a warning when running Pysper for pytorch_lightning, copy that and remove --file to update it
