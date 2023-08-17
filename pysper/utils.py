@@ -54,8 +54,7 @@ def merge_sentence(spk_text):
     merged_spk_text = []
     previous_speaker = None
     text_cache = []
-    for seg, speaker, text in spk_text:
-        print(f"{previous_speaker} - {speaker}")      
+    for seg, speaker, text in spk_text:   
         if speaker is None:
             if previous_speaker is not None:    
                 speaker = previous_speaker
@@ -173,17 +172,19 @@ def convert_m4a_to_wav(input_file, output_file):
     print("Conversion Completed!")
 
 def convert_audio_to_wav_1(file_path):
-    filenaming = file_path.split(".")[0]
-    ffmpeg_command = ["ffmpeg", "-i", file_path, "-c:a", "pcm_s16le", "-ar", "44100", "-ac", "2", "-f", "wav", f"../convert{filenaming}.wav"]
+    filenaming = file_path.split("/")[-1].split(".")[0]
+    ffmpeg_command = ["ffmpeg", "-i", file_path, "-c:a", "pcm_s16le", "-ar", "44100", "-ac", "2", "-f", "wav", f"../convert/{filenaming}.wav"]
     subprocess.run(ffmpeg_command)
 
 def convert_audio_to_wav_2(file_path):
-    filenaming = file_path.split(".")[0]
-    ffmpeg_command = ["ffmpeg", "y", "-i", file_path, "-c:a", "pcm_s16le", "-ar", "44100", "-ac", "2", "-f", "wav", f"../convert{filenaming}.wav"]
+    filenaming = file_path.split("/")[-1].split(".")[0]
+    ffmpeg_command = ["ffmpeg", "y", "-i", file_path, "-c:a", "pcm_s16le", "-ar", "44100", "-ac", "2", "-f", "wav", f"../convert/{filenaming}.wav"]
     subprocess.run(ffmpeg_command)
 
 def convert_audio_to_wav(file_path):
-    if os.path.exists(file_path):
+    name = file_path.split("/")[-1].split(".")[0]
+    file_name = f"../convert/{name}.wav"
+    if os.path.exists(file_name):
         convert_audio_to_wav_2(file_path)
     else:
         convert_audio_to_wav_1(file_path)
