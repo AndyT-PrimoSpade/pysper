@@ -1,7 +1,7 @@
 import os
 import whisper
 from pyannote.audio import Pipeline
-from utils import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, adjust_cpu_usage, convert_audio_to_wav, clear_cmd, clear_purge, print_time_difference
+from utils import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, adjust_cpu_usage, convert_audio_to_wav, clear_cmd, clear_purge
 from tqdm import tqdm
 import psutil
 import time
@@ -24,7 +24,6 @@ for element in filetype:
         output_path = convert_audio_to_wav(audiofile_name)
         saved_name = audiofile_name.split("/")[-1].split(".")[0]
         print(f"The {element} audio file has been convert to WAV format and saved to convert/{saved_name}.wav")
-clear_cmd()
 audiofile_name = audiofile_name.split("/")[-1].split(".")[0]
 main = f"../convert/{audiofile_name}.wav"
 with open("output.txt", "w") as f:
@@ -33,7 +32,6 @@ with open("output.txt", "w") as f:
     sys.stdout = sys.__stdout__
 if os.path.exists("output.txt"):
     os.remove("output.txt")
-clear_cmd()
 asr_model = whisper.load_model("medium").to(device)
 asr_model.to(torch.device("cuda:0"))
 audio_pipeline.to(torch.device("cuda:0"))
@@ -45,5 +43,6 @@ write_results_to_txt_file(diarized_text, f"../output/{audiofile_name}.txt")
 convert_txt_to_srt(f"../output/{audiofile_name}.txt", f"../output/{audiofile_name}.srt")
 end = datetime.datetime.now()
 print(end-start)
-print_time_difference(start, end)
 clear_purge()
+
+
