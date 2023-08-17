@@ -32,7 +32,7 @@ with open("output.txt", "w") as f:
     sys.stdout = sys.__stdout__
 if os.path.exists("output.txt"):
     os.remove("output.txt")
-asr_model = whisper.load_model("medium").to(device)
+asr_model = whisper.load_model("large-v2").to(device)
 asr_model.to(torch.device("cuda:0"))
 audio_pipeline.to(torch.device("cuda:0"))
 asr_transcription = asr_model.transcribe(main, verbose=False, language="en")
