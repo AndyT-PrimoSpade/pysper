@@ -2,6 +2,7 @@ import os
 import whisper
 from pyannote.audio import Pipeline
 from utils import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, adjust_cpu_usage, convert_audio_to_wav, clear_cmd, clear_purge
+from utils import diarize_and_merge_text, write_results_to_txt_file, convert_txt_to_srt, adjust_cpu_usage, convert_audio_to_wav, clear_cmd, clear_purge
 from tqdm import tqdm
 import psutil
 import time
@@ -17,6 +18,7 @@ device = torch.device("cuda:0")
 # device = torch.device("cpu")
 
 audio_filename = input("Audio File Name: ")
+audio_filename = audio_filename.lower()
 audio_filename = audio_filename.lower()
 audiofile_name = f"../input/{audio_filename}"
 filetype = ["m4a", "mp3", "mp4", "avi"]
@@ -34,8 +36,10 @@ with open("output.txt", "w") as f:
 if os.path.exists("output.txt"):
     os.remove("output.txt")
 asr_model = whisper.load_model("large-v2").to(device)
+asr_model = whisper.load_model("large-v2").to(device)
 asr_model.to(torch.device("cuda:0"))
 audio_pipeline.to(torch.device("cuda:0"))
+asr_transcription = asr_model.transcribe(main, verbose=False, language="en", task="translate")
 asr_transcription = asr_model.transcribe(main, verbose=False, language="en", task="translate")
 for result in tqdm(range(1)):
     diarization = audio_pipeline(main)
